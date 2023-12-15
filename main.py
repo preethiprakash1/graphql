@@ -46,6 +46,10 @@ request_data = {
     'query': query,
 }
 
+@app.get("/")
+def home():
+    return {"message": "Welcome to the FastAPI server!"}
+
 @app.get("/show")
 def show():
     response = requests.post(graphql_endpoint, json=request_data, headers=headers)
