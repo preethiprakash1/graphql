@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import strawberry
 from strawberry.asgi import GraphQL
-from typing import List
+from typing import List, Optional
 import requests
 
 @strawberry.type
@@ -12,7 +12,7 @@ class BookClub:
 @strawberry.type
 class Query:
     @strawberry.field
-    def bookclubs(self) -> List[BookClub]:
+    def bookclubs(self, title: Optional[str] = None, organizer: Optional[str] = None) -> List[BookClub]:
         bookclubs_data = [
             BookClub(title="Harry Potter", organizer="Lance Wong"),
             BookClub(title="Divergent", organizer="Sahil Mahendrakar"),
@@ -22,7 +22,16 @@ class Query:
             BookClub(title="Hunger Games", organizer="Josh Zhou"),
             BookClub(title="Percy Jackson", organizer="Nicole Lin"),
         ]
-        return bookclubs_data
+                
+        filtered_bookclubs = bookclubs_data
+
+        if title:
+            filtered_bookclubs = [club for club in filtered_bookclubs if club.title == title]
+
+        if organizer:
+            filtered_bookclubs = [club for club in filtered_bookclubs if club.organizer == organizer]
+
+        return filtered_bookclubs
 
 schema = strawberry.Schema(query=Query)
 
